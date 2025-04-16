@@ -1,40 +1,56 @@
-﻿// Liste de personnes
-var personnes = new List<Personne>
-        {
-            new Personne { Id = 1, Nom = "Alice", Age = 35},
-            new Personne { Id = 2, Nom = "Bob", Age = 28 },
-            new Personne { Id = 3, Nom = "Charlie", Age = 42 },
-            new Personne { Id = 4, Nom = "Diane", Age = 22,},
-        };
+﻿using Linq;
 
-// selectionner les personnes qui ont plus de 30ans
-var agees = personnes.Where(e => e.Age > 30).ToList();
-// trier la liste des personnes selectionnées par ordre alpha (nom)
-agees = agees.OrderBy(e => e.Nom).ToList();
-// ajouter a cette nouvelle liste une nouvelle personne vous (votre nom,age et id)
-agees.Add(new Personne() { Id = 20, Nom = "ELMI", Age = 32 });
-//supprimer de la liste la personne la plus jeune
-agees = agees.OrderBy(e=> e.Age).ToList();
+using var context = new AppDbContext();
 
-foreach (var personne in agees)
-{
-    Console.WriteLine(personne.Id + " " + personne.Nom + " " + personne.Age);
-}
-Console.WriteLine("---------------après suppression--------------");
-var first = agees.First();
-agees.Remove(first);
-// afficher le contenu de la liste
-foreach (var personne in agees)
-{
-    Console.WriteLine(personne.Id +" "+ personne.Nom +" "+personne.Age);
-} 
+// Créer un produit
+var product = new Product { Name = "bonbon", Price = 12M };
+var product1 = new Product { Name = "chaussure", Price = 300M };
+var product2 = new Product { Name = "riz", Price = 8M };
+var product3 = new Product { Name = "sucre", Price = 8M };
+var product4 = new Product { Name = "café", Price = 11M };
 
-class Personne
+context.Products.Add(product);
+context.Products.Add(product1);
+context.Products.Add(product2);
+context.Products.Add(product3);
+context.Products.Add(product4);
+context.SaveChanges();
+
+Console.WriteLine("------avant modification--------");
+var products = context.Products.ToList();
+foreach (var p in products)
 {
-    public int Id { get; set; }
-    public string Nom { get; set; }
-    public int Age { get; set; }
-    public int VilleId { get; set; }
+    Console.WriteLine($"Id: {p.Id}, Name: {p.Name}, Price: {p.Price}");
 }
 
+Console.WriteLine("------après modification des prix --------");
+// afficher tous les produits ont un prix superieur a 10
+var ps = context.Products.Where(e => e.Price > 10).ToList();
+// changer les prix de ces derniers par 5
+foreach (var p in ps)
+{
+    p.Price = 5;
+    context.Products.Update(p);
+}
+context.SaveChanges();
+var productsUpdated = context.Products.ToList();
+foreach (var p in productsUpdated)
+{
+    Console.WriteLine($"Id: {p.Id}, Name: {p.Name}, Price: {p.Price}");
+}
+Console.WriteLine("------après suppression des produits --------");
 
+// supprimer ces produits 
+foreach (var p in ps)
+{
+    context.Products.Remove(p);
+}
+context.SaveChanges();
+
+// afficher la liste des produits
+var newProducts = context.Products.ToList();
+foreach (var p in newProducts)
+{
+    Console.WriteLine($"Id: {p.Id}, Name: {p.Name}, Price: {p.Price}");
+}
+//afficher la liste des produit
