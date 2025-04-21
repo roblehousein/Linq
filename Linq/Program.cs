@@ -1,56 +1,50 @@
 ﻿using Linq;
+using Microsoft.EntityFrameworkCore;
 
 using var context = new AppDbContext();
+// enregistrement des étudiants
+//var etudiant1 = new Etudiant() { Nom = "Aicha", Prenom = "Ali" };
+//var etudiant2 = new Etudiant() { Nom = "Omar", Prenom = "Saban" };
+//context.Etudiants.AddRange(etudiant1, etudiant2);
+//context.SaveChanges();
 
-// Créer un produit
-var product = new Product { Name = "bonbon", Price = 12M };
-var product1 = new Product { Name = "chaussure", Price = 300M };
-var product2 = new Product { Name = "riz", Price = 8M };
-var product3 = new Product { Name = "sucre", Price = 8M };
-var product4 = new Product { Name = "café", Price = 11M };
+//// enregistrement des dossiers étudiant
+//var dossier1 = new DossierScolaire() { EtudiantId = etudiant1.Id };
+//var dossier2 = new DossierScolaire() { EtudiantId = etudiant2.Id };
+//context.DossierScolaires.AddRange(dossier1, dossier2);
+//context.SaveChanges();
 
-context.Products.Add(product);
-context.Products.Add(product1);
-context.Products.Add(product2);
-context.Products.Add(product3);
-context.Products.Add(product4);
-context.SaveChanges();
+// récuperer dans la base tous les étudiants avec leur dossier
+var etudiants = context.Etudiants
+    .Include(e => e.dossier) // inclure les informations du dossier
+    .ToList();
 
-Console.WriteLine("------avant modification--------");
-var products = context.Products.ToList();
-foreach (var p in products)
+var dossier = context.DossierScolaires
+    .Include(e => e.etudiant) // inclure les informations du dossier
+    .ToList();
+Console.WriteLine("----------------étudiants------------------");
+foreach (var e in etudiants)
 {
-    Console.WriteLine($"Id: {p.Id}, Name: {p.Name}, Price: {p.Price}");
+    Console.WriteLine($"Etudiant : {e.Nom} {e.Prenom}");
+    Console.WriteLine($"Dossier : {e.dossier.Id}");
 }
 
-Console.WriteLine("------après modification des prix --------");
-// afficher tous les produits ont un prix superieur a 10
-var ps = context.Products.Where(e => e.Price > 10).ToList();
-// changer les prix de ces derniers par 5
-foreach (var p in ps)
+Console.WriteLine("----------------dossier------------------");
+foreach (var e in dossier)
 {
-    p.Price = 5;
-    context.Products.Update(p);
+    Console.WriteLine($"Dossier : {e.Id}");
+    Console.WriteLine($"Etudiant : {e.etudiant.Nom} {e.etudiant.Prenom}");
+    
 }
-context.SaveChanges();
-var productsUpdated = context.Products.ToList();
-foreach (var p in productsUpdated)
-{
-    Console.WriteLine($"Id: {p.Id}, Name: {p.Name}, Price: {p.Price}");
-}
-Console.WriteLine("------après suppression des produits --------");
 
-// supprimer ces produits 
-foreach (var p in ps)
-{
-    context.Products.Remove(p);
-}
-context.SaveChanges();
-
-// afficher la liste des produits
-var newProducts = context.Products.ToList();
-foreach (var p in newProducts)
-{
-    Console.WriteLine($"Id: {p.Id}, Name: {p.Name}, Price: {p.Price}");
-}
-//afficher la liste des produit
+//var etudiant = new Etudiant
+//{
+//    Nom = "Robert",
+//    Prenom = "Ronald",
+//    dossier = new DossierScolaire
+//    {
+//        DateCreation = DateTime.Now
+//    }
+//};
+//context.Etudiants.Add(etudiant);
+//context.SaveChanges();
