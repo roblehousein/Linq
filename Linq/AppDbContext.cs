@@ -11,6 +11,8 @@ namespace Linq
     public class AppDbContext : DbContext
     {
         public DbSet<Etudiant> Etudiants { get; set; }
+        public DbSet<Cours> Cour { get; set; }
+        public DbSet<Professeur> Professeurs { get; set; }
         public DbSet<DossierScolaire> DossierScolaires { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)

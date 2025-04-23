@@ -4,6 +4,7 @@ using Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Linq.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250423161625_troisiemeMigration")]
+    partial class troisiemeMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,28 +24,6 @@ namespace Linq.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
-
-            modelBuilder.Entity("Linq.Cours", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ProfesseurId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Titre")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProfesseurId");
-
-                    b.ToTable("Cour");
-                });
 
             modelBuilder.Entity("Linq.DossierScolaire", b =>
                 {
@@ -87,34 +68,6 @@ namespace Linq.Migrations
                     b.ToTable("Etudiants");
                 });
 
-            modelBuilder.Entity("Linq.Professeur", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Nom")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Professeurs");
-                });
-
-            modelBuilder.Entity("Linq.Cours", b =>
-                {
-                    b.HasOne("Linq.Professeur", "Professeur")
-                        .WithMany("Cours")
-                        .HasForeignKey("ProfesseurId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Professeur");
-                });
-
             modelBuilder.Entity("Linq.DossierScolaire", b =>
                 {
                     b.HasOne("Linq.Etudiant", "etudiant")
@@ -129,11 +82,6 @@ namespace Linq.Migrations
             modelBuilder.Entity("Linq.Etudiant", b =>
                 {
                     b.Navigation("dossier");
-                });
-
-            modelBuilder.Entity("Linq.Professeur", b =>
-                {
-                    b.Navigation("Cours");
                 });
 #pragma warning restore 612, 618
         }
