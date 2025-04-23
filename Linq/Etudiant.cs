@@ -12,5 +12,6 @@ namespace Linq
         public string Nom { get; set; }
         public string Prenom { get; set; }
         public DossierScolaire? dossier { get; set; }
+        public List<Inscrit>? inscrits { get; set; }
     }
 }
